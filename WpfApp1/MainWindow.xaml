@@ -1,0 +1,88 @@
+﻿<Window x:Class="WPF_Sample.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:WpfApp1"
+        mc:Ignorable="d"
+        Title="TeamObservable" Height="450" Width="1109.862" Closed="window_Closed" Loaded="window_Loaded">
+    <Window.Resources>
+        <local:ConvertToInits x:Key="MyConverter"/>
+        <DataTemplate x:Key="MyTemplate">
+            <TextBlock Text="{Binding Converter={StaticResource MyConverter}}"/>
+        </DataTemplate>
+
+        <local:ConvAll x:Key="MyConverter_All"/>
+        <DataTemplate x:Key="MyTemplate_All">
+            <TextBlock Text="{Binding Converter={StaticResource MyConverter_All}}"/>
+        </DataTemplate>
+        
+    </Window.Resources>
+    
+    <Grid Background="White" Margin="0,0,2,0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="0*"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="657*"/>
+            <ColumnDefinition Width="0*"/>
+            <ColumnDefinition Width="149*"/>
+            <ColumnDefinition Width="289*"/>
+        </Grid.ColumnDefinitions>
+
+        <ListBox Name="ListBox_All"  ItemsSource="{Binding Path=Get_Everyone}" HorizontalAlignment="Stretch"  Margin="136,27,10,10" VerticalAlignment="Stretch"  RenderTransformOrigin="-0.472,0.501" Background="LightGray" SelectionChanged="ListBox_All_SelectionChanged"/>
+
+        <Menu HorizontalAlignment="Left" Height="30" VerticalAlignment="Top" Width="91" Background="LightGray" Foreground="Black">
+            <MenuItem Header="File">
+                <MenuItem Header="New" Click="FileMenu_New_Clicked"/>
+                <MenuItem Header="Open" Click="FileMenu_Open_Clicked"/>
+                <MenuItem Header="Save" Click="FileMenu_Save_Clicked"/>
+            </MenuItem>
+            <MenuItem Header="Edit">
+                <MenuItem Header="Add Default Researcher" Click="EditMenu_AddDefaultResearcher"/>
+                <MenuItem Header="Add Default Programmer" Click="EditMenu_AddDefaultProgrammer"/>
+                <MenuItem Header="Add Custom Researcher" Click="EditMenu_AddCustomResearcher" Name="AddCustomResearcher_Buttom"/>
+                <MenuItem Header="Add Defaults" Click="EditMenu_AddDefaults"/>
+                <MenuItem Header="Remove" Click="EditMenu_Remove"/>
+            </MenuItem>
+        </Menu>
+
+        <ListBox Name="ListBox_Researchers" ItemTemplate="{StaticResource MyTemplate}"  HorizontalAlignment="Stretch" Margin="136,10,10,27" Grid.Row="2" VerticalAlignment="Stretch" Background="LightGray" >
+            <ListBox.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header ="Add Default Researcher" Click="EditMenu_AddDefaultResearcher">
+                    </MenuItem>
+                    <MenuItem Header ="Add Custom Researcher" Click="EditMenu_AddCustomResearcher">
+                    </MenuItem>
+                </ContextMenu>
+            </ListBox.ContextMenu>
+        </ListBox>
+
+        <TextBlock Name="TextBlock_IfChanged" Text="{Binding IfChanged}" HorizontalAlignment="Left" Margin="0,54,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Background="LightGray" Height="34" Width="93"/>
+        <TextBlock Name="TextBlock_ResearchersPercent" Text="{Binding researchers_percent}" Grid.Column="2" HorizontalAlignment="Left" Margin="19,73,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Background="LightGray" Height="31" Width="86"/>
+        <TextBox Name="TextBox_GroupName" Grid.Column="2"  Text="{Binding group_name}" HorizontalAlignment="Left" Height="29" Margin="19,39,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Background="LightGray" Width="120"/>
+
+        <TextBlock Grid.Column="2" HorizontalAlignment="Left" Margin="19,10,0,0" Grid.Row="2" TextWrapping="Wrap" Text="{Binding SelectedItem.birth_date, ElementName=ListBox_Researchers}" Background="LightGray" VerticalAlignment="Top" Height="25" Width="120" RenderTransformOrigin="-0.658,-0.16"/>
+        <TextBlock Grid.Column="2" HorizontalAlignment="Left" Margin="19,70,0,115" Grid.Row="2" TextWrapping="Wrap" Text="{Binding SelectedItem.research_theme, ElementName=ListBox_Researchers}" Background="LightGray" Height="25" Width="120"/>
+        <TextBlock Grid.Column="2" HorizontalAlignment="Left" Margin="19,40,0,0" Grid.Row="2" TextWrapping="Wrap" Text="{Binding SelectedItem.number_of_publications, ElementName=ListBox_Researchers}" Background="LightGray" VerticalAlignment="Top" Height="25" Width="120"/>
+
+
+        <Grid Name="inp_grid" Grid.Column="3" HorizontalAlignment="Left" Height="161" Margin="30,27,0,0" VerticalAlignment="Top" Width="170">
+            <TextBox x:Name="name" HorizontalAlignment="Left" Height="27" Margin="10,12,0,0" TextWrapping="Wrap" Text="{Binding name_and_surname[0], Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="120"/>
+            <TextBox x:Name="surname" HorizontalAlignment="Left" Height="23" Margin="10,44,0,0" TextWrapping="Wrap" Text="{Binding name_and_surname[1], Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" VerticalAlignment="Top" Width="120"/>
+            <DatePicker x:Name="birthday" HorizontalAlignment="Left" Margin="10,72,0,0" VerticalAlignment="Top" Width="120" SelectedDate="{Binding birth_date, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+            <ComboBox x:Name="research" HorizontalAlignment="Left" Margin="10,101,0,0" VerticalAlignment="Top" Width="120" SelectedItem="{Binding Path = research_theme}"/>
+            <TextBox x:Name="pubnum" HorizontalAlignment="Left" Height="23" Margin="10,128,0,0" TextWrapping="Wrap"  VerticalAlignment="Top" Width="120" Text="{Binding Path = number_of_publications, UpdateSourceTrigger=PropertyChanged}"/>
+        </Grid>
+        
+        <TextBlock Text="{Binding SelectedItem.birth_date, ElementName=ListBox_Researchers}" Grid.Column="3" HorizontalAlignment="Left" Margin="117,40,0,0" Grid.Row="2" TextWrapping="Wrap"  VerticalAlignment="Top" Height="25" Width="145"/>
+        <TextBlock Text="{Binding SelectedItem.research_theme, ElementName=ListBox_Researchers}" Grid.Column="3" HorizontalAlignment="Left" Margin="121,70,0,0" Grid.Row="2" TextWrapping="Wrap"  VerticalAlignment="Top" Height="25" Width="83"/>
+        <TextBlock Text="{Binding SelectedItem.number_of_publications, ElementName=ListBox_Researchers}" Grid.Column="3" HorizontalAlignment="Left" Margin="117,95,0,0" Grid.Row="2" TextWrapping="Wrap"  VerticalAlignment="Top" Height="25" Width="79" RenderTransformOrigin="0.514,1.774"/>
+        <RadioButton Click="RBClicked" Name="EnableTemplate" Content="EnableTemplate" Grid.Column="2" HorizontalAlignment="Left" Margin="46,142,0,0" Grid.Row="2" VerticalAlignment="Top"/>
+        <RadioButton Click="RBClicked" Name="DisableTemplate" Content="DisableTemplate" Grid.Column="2" HorizontalAlignment="Left" Margin="46,162,0,0" Grid.Row="2" VerticalAlignment="Top"/>
+
+
+    </Grid>
+</Window>
